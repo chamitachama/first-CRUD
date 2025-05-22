@@ -1,4 +1,4 @@
-
+import "./App.css"
 import { useState } from 'react'
 
 // const Animals = [
@@ -19,11 +19,19 @@ const AnimalRow = ({ animal, onDelete, onChange }) => {
     return(
       <> 
       <tr>
-        <td style={{color:'green'}}>{name}</td>
+        <td>{animal.id}</td>
+        <td style={{color:'black'}}>{name}</td>
         <td>{animal.breed}</td>
-        <td><input onChange={(event) => onChange(animal.name, event.target.checked)} type="checkbox" checked={animal.isAdopted}/></td>
-        <td><button onClick={() => onDelete(animal.name)}>delete</button></td>
+        <td> <div className="checkbox-wrapper-29">
+                    <label className="checkbox">
+                    <input onChange={(event)=> onChange(animal.id,event.target.checked)} checked={animal.isAdopted} type="checkbox" className="checkbox__input" />  
+                    <span className="checkbox__label"></span>
+                </label>   
+            </div></td>
+        <td>{animal.age}</td>
+        <td><button onClick={() => onDelete(animal.id)}>Delete Pet</button></td>
       </tr>
+
       </>
     )
 };
@@ -32,73 +40,98 @@ const AnimalTable = ({ animals, onDelete, onChange }) =>{
   const rows = [];
    animals.forEach((animal) => {
      rows.push(
-       <AnimalRow animal={animal} key={animal.name} onDelete={onDelete} onChange={onChange}  />
+       <AnimalRow animal={animal} key={animal.id} id={animal.id} onDelete={onDelete} onChange={onChange}  />
      );
   });
 
     return (
       <>
-        <table>
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Raza</th>
-                <th>Is Adopted?</th>
-
-            </tr>
-            </thead>
-            <tbody>
-                {rows}
-            </tbody>
-        </table>
+        <div className="container">
+            <table>
+                <thead>
+                <tr>
+                    <th className="id">ID</th>
+                    <th>Name</th>
+                    <th>Breed</th>
+                    <th>Adopted</th>
+                    <th>Age</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>
+        </div>        
       </>
     );
 };
 
 
 function AnimalCreationForm ({onCreate}) {
-  return (
-    <form onSubmit={onCreate}>
-      <input name="name" type="text" placeholder='Pet Name' />
-      <input name="breed" type="text" placeholder='Pet Breed' />
-      <label>
-        <input type="checkbox" name="adopted" />
-        is Adopted?
-      </label>
-      <input type="submit"  />    
-      </form>
+
+    const [petName, setPetName] = useState('');
+
+
+    const handleNameChange = (event) => {
+        setPetName(event.target.value)
+        console.log(setPetName)
+    }
+        
+
+    return (
+      <>
+        <h1>Enter a new Pet</h1>
+        <h2>Preview: {petName}</h2>
+        <form onSubmit={onCreate}>
+            <label htmlFor="name">Name         <input name="name" type="text" placeholder='Please enter a Name' onChange={handleNameChange} value={petName} />
+</label>
+        <input name="breed" type="text" placeholder='Please enter a Breed' />
+        <input name="age" type="number" placeholder="How old is it?"/>
+        <label>
+            <input className="check" type="checkbox" name="adopted" />
+            Is " {petName} " Adopted?
+        </label>
+        <input type="submit"  />    
+        </form>
+    </>
   )
 };
 
+
+
+
 const FilterableTable = () => {
   const [animals, setAnimals] = useState([])
-  // const [nextID, setNextID] = useState(0)
+  const [nextID, setNextID] = useState(1)
 
   const addPet = (event) => {
     let animal = {
+      id: nextID,
       name: event.target[0].value,
       breed: event.target[1].value,
-      isAdopted: event.target[2].checked
-      // Id: nextID
+      age: event.target[2].value,
+      isAdopted: event.target[3].checked
       
     };
 
     setAnimals((currentAnimals) => [...currentAnimals, animal])
-    event.preventDefault()
-  
-    // setNextID
-  }
+    event.preventDefault();
+
+    setNextID(nextID + 1)
+
+    }
 
   const deletePet = (key) =>{
     setAnimals((currentAnimals)=> {
-      return currentAnimals.filter((animal) => animal.name !== key)
+      return currentAnimals.filter((animal) => animal.id !== key)
     })
   }
 
   const updateStatus = (key,newState) => {
     setAnimals((currentAnimals)=>{
       return currentAnimals.map((animal)=>{
-        if (animal.name === key) {
+        if (animal.id === key) {
           return {
             ...animal,
             isAdopted: newState
@@ -111,7 +144,7 @@ const FilterableTable = () => {
   }
   
   return (
-    <div>
+    <div className="filteredTable">
       <AnimalCreationForm onCreate={addPet}/>
       <AnimalTable animals={animals} onDelete={deletePet} onChange={updateStatus} />
     </div>
