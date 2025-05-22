@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1747949895298,
+    "name": "Sen",
+    "breed": "Gata pesada",
+    "age": "7",
+    "isAdopted": true
+  },
+  {
+    "id": 1747949911379,
+    "name": "Maladeta",
+    "breed": "Gata Insoportable",
+    "age": "1000",
+    "isAdopted": false
+  }
+]

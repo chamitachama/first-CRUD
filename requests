@@ -1,0 +1,20 @@
+GET http://localhost:3001/animals
+
+POST http://localhost:3001/animals
+content-type: application/json
+
+{
+    "name": "Maladeta",
+    "breed": "Gata Mala",
+    "isAdopted": false,
+    "age": 6000
+}
+
+DELETE http://localhost:3001/animals/1747946620568
+
+PATCH http://localhost:3001/animals/1747946545408
+content-type: application/json
+
+{
+    "isAdopted": true
+}

@@ -1,0 +1,25 @@
+# Ignore everything
+node_modules/
+api/node_modules
+frontend/node_modules
+
+!.gitignore
+!.gitpod.yml
+!.gitpod.Dockerfile
+!bc.json
+!learn.json
+!README.md
+!README.es.md
+!.vscode
+
+!/exercises
+!/exercises/*
+
+!/.learn
+/.learn/**
+!/.learn/resets
+!/.learn/resets/**
+!/.learn/assets
+!/.learn/assets/**
+!/.learn/exercises
+!/.learn/exercises/**
