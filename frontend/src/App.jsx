@@ -1,5 +1,5 @@
 import "./App.css"
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // const Animals = [
 //     { category: "Gato", raza: "carey", adopted: true, name: "Maladeta" },
@@ -7,10 +7,6 @@ import { useState } from 'react'
 //     { category: "perro", raza: "dalmata", adopted: false, name: "Vaca" },
 //     { category: "perro", raza: "chow-chow", adopted: true, name: "Peluso" },
 // ];
-
-
-
-
 
 const AnimalRow = ({ animal, onDelete, onChange }) => {
     const name = animal.isAdopted ? animal.name :
@@ -99,48 +95,54 @@ function AnimalCreationForm ({onCreate}) {
 };
 
 
-
-
 const FilterableTable = () => {
   const [animals, setAnimals] = useState([])
-  const [nextID, setNextID] = useState(1)
+  
+  const fetchData = async () => {
+    const response = await fetch("http://localhost:3001/animals");
+    const data = await response.json();
+    setAnimals(data)
+  }
 
-  const addPet = (event) => {
+  useEffect(() => {
+    fetchData().catch(console.error);
+  }, [])
+
+  const addPet = async (event) => {
     let animal = {
-      id: nextID,
       name: event.target[0].value,
       breed: event.target[1].value,
       age: event.target[2].value,
       isAdopted: event.target[3].checked
-      
     };
-
-    setAnimals((currentAnimals) => [...currentAnimals, animal])
-    event.preventDefault();
-
-    setNextID(nextID + 1)
-
-    }
-
-  const deletePet = (key) =>{
-    setAnimals((currentAnimals)=> {
-      return currentAnimals.filter((animal) => animal.id !== key)
+    await fetch("http://localhost:3001/animals", {
+      method: "POST",
+      body: JSON.stringify(animal),
+      headers: {
+        "Content-Type": "application/json"
+      }
     })
+    await fetchData()
+
+    event.preventDefault();
   }
 
-  const updateStatus = (key,newState) => {
-    setAnimals((currentAnimals)=>{
-      return currentAnimals.map((animal)=>{
-        if (animal.id === key) {
-          return {
-            ...animal,
-            isAdopted: newState
-          };
-        } else {
-          return animal;
-        }
-      })
-    })
+  const deletePet = async (key) => {
+    await fetch(`http://localhost:3001/animals/${key}`, {
+      method: "DELETE"
+    });
+    await fetchData();
+  }
+
+  const updateStatus = async (key, newState) => {
+    await fetch(`http://localhost:3001/animals/${key}`, {
+      method: "PATCH",
+      body: JSON.stringify({ isAdopted: newState }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    await fetchData();
   }
   
   return (
